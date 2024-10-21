@@ -14,7 +14,7 @@ export default function CurrencyConverter() {
     HRK: 6.94,     
   };
 
-  const submit = (e) => {
+   const submit = (e) => {
     e.preventDefault();
     const fromRate = exchangeRates[fromCurrency()];
     const toRate = exchangeRates[toCurrency()];
