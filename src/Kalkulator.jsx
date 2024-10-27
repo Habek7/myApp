@@ -1,21 +1,31 @@
 import { createSignal } from "solid-js";
-import "./Kalkulator.css";  
+import "./Kalkulator.css";
+import idegas from "./assets/idegas.png";
 
 export default function CurrencyConverter() {
-  const [amount, setAmount] = createSignal(0);
+  const [amount, setAmount] = createSignal();
   const [convertedAmount, setConvertedAmount] = createSignal(0);
   const [fromCurrency, setFromCurrency] = createSignal("USD");
   const [toCurrency, setToCurrency] = createSignal("EUR");
+  const [error, setError] = createSignal("");
 
   const exchangeRates = {
-    USD: 1,     
-    EUR: 0.92,  
-    GBP: 0.77,   
-    HRK: 6.94,     
+    USD: 1,
+    EUR: 0.93,
+    GBP: 0.77,
+    HRK: 7.02,
   };
 
-   const submit = (e) => {
+  const submit = (e) => {
     e.preventDefault();
+    if (amount() < 0) {
+      setError("Uneseni iznos ne može biti negativan!"); 
+      setConvertedAmount(0);
+      return;
+    } else {
+      setError("");
+    }
+    
     const fromRate = exchangeRates[fromCurrency()];
     const toRate = exchangeRates[toCurrency()];
     setConvertedAmount(((amount() / fromRate) * toRate).toFixed(2));
@@ -23,11 +33,14 @@ export default function CurrencyConverter() {
 
   return (
     <div>
+      <img src={idegas} alt="slikica" width="150" height="150" />
+      <h1>KALKULATOR ZA PRETVORBU VALUTA</h1>
       <form onsubmit={submit}>
         <label>
           Unesi iznos:  
           <input
             type="number"
+            step="0.01"
             name="amount"
             value={amount()}
             oninput={(e) => setAmount(e.target.value)}
@@ -59,6 +72,8 @@ export default function CurrencyConverter() {
         </label> <br/>
         <input type="submit" value="Pretvori" />
       </form>
+      
+      {error() && <p class="error">{error()}</p>} {}
       <p>Pretvoreni iznos: {convertedAmount()} {toCurrency()}</p>
     </div>
   );
